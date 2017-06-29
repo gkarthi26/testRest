@@ -4,11 +4,13 @@ import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+
+
 /**
  * @author Karthikeyan
  *
  */
-@XmlRootElement
+@XmlRootElement(name="Post")
 public class Post implements Serializable 
 {
 	/**
@@ -89,6 +91,13 @@ public class Post implements Serializable
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	@Override
+	public String toString() {
+		return "Post [postId=" + postId + ", postText=" + postText + ", postCreatedTime=" + postCreatedTime
+				+ ", postCreatorType=" + postCreatorType + ", associatedTone=" + associatedTone
+				+ ", associatedToneScore=" + associatedToneScore + "]";
 	}
 	 
 	

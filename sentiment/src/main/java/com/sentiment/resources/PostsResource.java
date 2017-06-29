@@ -10,7 +10,12 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.sentiment.objects.Post;
 import com.sentiment.services.PostService;
@@ -21,25 +26,25 @@ public class PostsResource
 	PostService postService = new PostService();
 	@GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Post> getAllPosts() 
+    public Response getAllPosts() 
     {
-		return postService.getAllPosts();    	
+		return Response.ok(new GenericEntity<List<Post>>(postService.getAllPosts()) {}).header("Access-Control-Allow-Origin", "*").build();
     }
 	
 	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-	public List<Post> createPost(Post post)
+	public Response createPost(Post postInput)
 	{
-		List<Post> posts = new ArrayList<>();
-		posts = postService.getAllPosts();
-		post.setPostId("3");
-		post.setPostCreatedTime(new Date().toString());
-		post.setPostCreatorType("Member");
-		post.setAssociatedTone("TBD");
-		post.setAssociatedToneScore("TBD");
-		
-		posts.add(post);
-		return posts ;
+		System.out.println("Inside createPost()");
+		if(postInput != null && !StringUtils.isBlank(postInput.getPostText()))
+		{
+			System.out.println("Inside Post resource-Post input: "+postInput.getPostText());
+			Post post = postService.createPost(postInput) ;
+			return Response.ok(post).header("Access-Control-Allow-Origin", "*").build();
+		}
+		else
+		{
+			return Response.status(Status.BAD_REQUEST).header("Access-Control-Allow-Origin", "*").build();
+		}
 	}
 }
